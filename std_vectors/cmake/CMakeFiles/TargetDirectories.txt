@@ -1,0 +1,3 @@
+/home/gosha/msu/sem_3/msu/cmake/CMakeFiles/main.dir
+/home/gosha/msu/sem_3/msu/cmake/CMakeFiles/edit_cache.dir
+/home/gosha/msu/sem_3/msu/cmake/CMakeFiles/rebuild_cache.dir

@@ -54,7 +54,7 @@ int main(){
 	LagrangeClass::Polynomial poly2;
 
 	poly1[1] = 2;
-	poly1.AddDot(2, 3);
+	poly1.AddDot(2, 0);
 
 	poly1.CoeffCalc();
 	std::cout << poly1;

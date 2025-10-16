@@ -27,7 +27,7 @@ namespace LagrangeClass{
 		Предпологается, что у нас второй 
 		массив (мб вектор? Да,
 		ибо тогда я сразу имеюдоступ ко всей инфе,
-		что мне нужна: size, resize... Ну и все =) )
+		что мне нужно: size, resize... Ну и все =) )
 		всегда имеет 2 элемента, где последний = 1,
 		т.е. это (x-c)
 		*/
@@ -39,8 +39,9 @@ namespace LagrangeClass{
 		FinePoly.resize(PolySize);
 
 		for (int i = 1; i < PolySize; i++){
-			FinePoly[i] = FirstPoly[i -1];
+			FinePoly[i] = FirstPoly[i - 1];
 		}
+
 		/*
 		Здесь у нас будет такой вид выходного вектора:
 		-------------
@@ -369,9 +370,10 @@ namespace LagrangeClass{
 				ChangeVec(i, tmp, XDots);
 
 				tmp.clear();
-				tmp.resize(XDots.size() - 1);
+				tmp.resize(YDots.size() - 1);
 
 				ChangeVec(i, tmp, YDots);
+
 				flag = 0;
 				break;
 			}
