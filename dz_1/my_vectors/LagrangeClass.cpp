@@ -1,8 +1,11 @@
 #include <iostream>
+#include <cmath>
 #include "Vecs.hpp"
 #include "LagrangeClass.hpp"
 
 using namespace MyVec;
+
+#define EPS 10e-16
 
 namespace LagrangeClass{
 
@@ -59,7 +62,7 @@ namespace LagrangeClass{
 
 	//Начинается класс
 
-	Polynomial::Polynomial(){};
+	Polynomial::Polynomial(){}
 	//Конструктор по умолчанию ничего не делает
 
 	/*
@@ -94,7 +97,7 @@ namespace LagrangeClass{
 	CoefficientsValues(other.CoefficientsValues),
 	XDots(other.XDots),
 	YDots(other.YDots)
-	{};
+	{}
 	//Конструктор копирования просто копирует vector
 
 	Polynomial& Polynomial::operator= (const Polynomial& other){
@@ -116,7 +119,7 @@ namespace LagrangeClass{
 		int i = 0;
 
 		for (i = 0; i < XDots.size(); i++){
-			if (XDots[i] == x){
+			if (std::abs(XDots[i] - x) <= EPS){
 				YDots[i] = y;
 				break;
 			}
@@ -152,7 +155,7 @@ namespace LagrangeClass{
 		}
 
 		for (int i = 0; i < CoefficientsValues.size(); i ++){
-			if (CoefficientsValues[i] != other.CoefficientsValues[i]) {
+			if (std::abs(CoefficientsValues[i] - other.CoefficientsValues[i]) >= EPS ) {
 				return 0;
 			}
 		}
@@ -192,7 +195,7 @@ namespace LagrangeClass{
 		}
 
 		for (int i = 0; i < CoefficientsValues.size(); i ++){
-			if (CoefficientsValues[i] != other.CoefficientsValues[i]) {
+			if (std::abs(CoefficientsValues[i] - other.CoefficientsValues[i]) >= EPS) {
 				return 1;
 			}
 		}
@@ -212,7 +215,7 @@ namespace LagrangeClass{
 		return 0;
 	}
 
-	Polynomial::~Polynomial(){};
+	Polynomial::~Polynomial(){}
 	//Деструктор освобождает пямять вектора (я надеюсь...
 	//Мб там есть отдельный метод "delete" для такого, хз)
 
@@ -221,7 +224,7 @@ namespace LagrangeClass{
 		int i = 0;
 
 		for (i = 0; i < XDots.size(); i++){
-			if (XDots[i] == Arg){
+			if (std::abs(XDots[i] - Arg) <= EPS){
 				return YDots[i];
 			}
 		}
@@ -349,7 +352,7 @@ namespace LagrangeClass{
 		int i = 0;
 		bool flag = 1;
 		for (i = 0; i < XDots.size(); i++){
-			if ((XDots[i] == x) && ((YDots[i] == y))){
+			if ((std::abs(XDots[i] - x) <= EPS) && ((std::abs(YDots[i] - y) <= EPS))){
 				Vec tmp;
 
 				// std::cerr << "X -> \n" << XDots << std::endl;

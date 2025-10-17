@@ -1,0 +1,50 @@
+[Gurin_GK@ns153 my_vectors]$ ./a.out 
+0: L(1) = 2
+1: L(2) = 3
+1 + 1*x^1
+
+0: L(1) = 2
+1: L(2) = 3
+2: L(4) = 4
+0.666667 + 1.5*x^1 + -0.166667*x^2
+
+0: L(1) = 2
+1: L(2) = 3
+2: L(4) = 4
+0.666667 + 1.5*x^1 + -0.166667*x^2
+
+0: L(1) = 2
+1: L(2) = 3
+2: L(4) = 4
+0.666667 + 1.5*x^1 + -0.166667*x^2
+
+0: L(1) = 2
+1: L(2) = 3
+1 + 1*x^1
+
+------------------------------------------------------------
+total allocation requests:    161 ; max. mem used 0 kBytes
+leak    176 Bytes in 16 blocks
+Run 'LeakAnalyze ./a.out' to find problems
+WORK TIME - 00:00:00.00
+[Gurin_GK@ns153 my_vectors]$ LeakAnalyze ./a.out
+Gathered 16 (3 unique) points of data.
+Reading symbols from ./a.out...
+(gdb) 
+#-- Leak: counted 4x / total Size: 32
+During symbol reading: unsupported tag: 'DW_TAG_unspecified_type'
+During symbol reading: Multiple children of DIE 0x61b1 refer to DIE 0x61a4 as their abstract origin
+0x402987 is in MyVec::Vec::Vec(double) (Vecs.cpp:61).
+60              Vec::Vec(const double Arg):
+61                      data(new double[1]),
+
+#-- Leak: counted 6x / total Size: 96
+0x402bad is in MyVec::Vec::operator=(MyVec::Vec const&) (Vecs.cpp:104).
+103
+104                     data = new double[data_size];
+
+#-- Leak: counted 6x / total Size: 48
+0x402d52 is in MyVec::Vec::resize(int) (Vecs.cpp:133).
+132
+133                             data = new double[NewSize];
+
