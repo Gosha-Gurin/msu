@@ -311,6 +311,11 @@ namespace LagrangeClass{
 			VecTmp.resize(1);
 			VecTmp[0] = 1;
 
+//             VecTmp.~Vec();
+//             Vec VecTmp(1);
+//             std::cerr << VecTmp << std::endl;
+
+            /*********    ТРАБЛ ГДЕ_ТО ЗДЕСЬ   ***********/
 
 			FracTmp = 1;	
 		}
