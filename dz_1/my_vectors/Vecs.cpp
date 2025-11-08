@@ -52,7 +52,7 @@ namespace MyVec{
 	Vec::Vec():
 		data(nullptr),
 		data_size(0)
-	{};
+	{}
 
 
 	//ЭТОТ специальный конструктор работает только для одноэлементного массива.
@@ -64,6 +64,18 @@ namespace MyVec{
 		data[0] = Arg;
 	}
 
+    Vec::Vec(const Vec& other):
+        data(nullptr),
+        data_size(other.data_size)
+    {
+        data = new double[data_size];
+//         if (!data){
+//         }
+        // Мне лень на \той клаве писать проверку
+        for (int i = 0; i < data_size; i++){
+            data[i] = other.data[i];
+        }
+    }
 
 	// А этот только для 2 элемента
 
@@ -77,7 +89,7 @@ namespace MyVec{
 		data[1] = SecArg;
 	}
 
-	size_t Vec::size() const{
+	int Vec::size() const{
 		return data_size;
 	}
 
@@ -199,6 +211,6 @@ namespace MyVec{
 	}
 
 	Vec::~Vec(){
-		// delete [] data;
-	};
+		delete [] data;
+	}
 }

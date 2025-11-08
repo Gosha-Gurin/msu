@@ -8,7 +8,7 @@ namespace MyVec{
 
 	class Vec{
 		double* data;
-		size_t data_size;
+		int data_size;
 
 		friend std::ostream& operator<<(
 			std::ostream& stream, const Vec& Vec);
@@ -17,10 +17,12 @@ namespace MyVec{
 		Vec();
 
 		Vec(const double Arg);
+        
+        Vec(const Vec& other);
 
 		Vec(const double FirstArg, const double SecArg);//Двойной
 
-		size_t size() const;
+		int size() const;
 
 		Vec& operator=(const Vec& other);
 
