@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 #include "svgclass.hpp"
 
 
@@ -6,7 +7,8 @@
 color::color(double r, double g, double b):
 	red(r),
 	green(g),
-	blue(b)
+	blue(b),
+	TextColor("")
 {
 	if ( !(((red >= 0) && (red <= 255))
 		&& ((green >= 0) && (green <= 255))
@@ -15,39 +17,87 @@ color::color(double r, double g, double b):
 	}
 }
 
-void color::print(std::ostream& out) const {
-	out << "("<< red << ", "
-			<< green << ", "
-			<< blue << ")" << std::endl;
+
+color::color(std::string color):
+	red(0),
+	green(0),
+	blue(0),
+	TextColor(color){
+		if ((TextColor != "red") &&
+			(TextColor != "green") &&
+			(TextColor != "blue") &&
+			(TextColor != "white") &&
+			(TextColor != "black") &&
+			(TextColor != "pink") &&
+			(TextColor != "purple") &&
+			(TextColor != "grey") &&
+			(TextColor != "none")){
+			throw std::invalid_argument("Wrong color arg.");
+		}
 }
+
+
+void color::print(std::ostream& out) const {
+	if (TextColor == ""){
+		out << "rgb("<< red << ","
+				<< green << ","
+				<< blue << ")";
+	} else{
+		out << TextColor;
+	}
+}
+
 
 void object::obj_print(std::ostream& out) const {
-	out << "fill-color: ";
+	out << "fill=\"";
 	fillColor.print(out);
-
-	out << "stroke-color: ";
+	out << "\" stroke=\"";
 	strokeColor.print(out);
-
-	out << "stroke-width" << strokeWidth << std::endl;
+	out << "stroke-width=\"" << strokeWidth << "\"";
 }
 
 
-void text::print(std::ostream& out) const {
-	
-	obj_print(out); //Значения из класса-прообраза
-	
+void text::print(std::ostream& out) const{
+	out << "\t<text x = \"" << point.getX() << "\" y=\""
+		<< point.getY() << "\" "
+		<< "dx=\"" << point.getX() << "\" dy=\""
+		<< point.getY() << "\""
+		<< "font-size=\"" << fontSize << "\""
+		<< "font-family=\"" << fontFamaly << "\" ";
 
-	out <<
-	"point: " << point.x << " " << point.y << "\n" <<
-	"offset: "  << offset.x << " " << offset.y << "\n" <<
-	"font-size: "  << fontSize << "\n" <<
-	"font-famaly: "  << fontFamaly << "\n" <<
-	"text: " << data << std::endl;
+	obj_print(out);
+	out << ">\n"
+		<< "\t" << data << "\n</text>" << std::endl;
 }
+
+
+void polyline::print(std::ostream& out) const{
+	out << "\t<polyline points=\"";
+	for (int i = 0; i < points.size(); i++){
+		if (i == points.size() - 1){
+			out << points[i].getX() << "," << points[i].getY() << " ";
+		} else{
+			out << points[i].getX() << "," << points[i].getY();
+		}
+	}
+
+	obj_print(out);
+	out << ">" << std::endl;
+}
+
+void circle::print(std::ostream& out) const{
+	out << "\t<circle cx=\"" << center.getX() << "\" "
+		<< "cy=\"" << center.getX() << "\" ";
+
+	obj_print(out);
+	out << ">" << std::endl;
+}
+
 
 void document::AddObject(object* obj){
 	object** tmp;
 	if (count != 0){
+		std::cout << "hi!" << std::endl;
 		tmp = new object*[count];
 		for (int i = 0; i < count; i++){
 			tmp[i] = list[i];
@@ -62,22 +112,33 @@ void document::AddObject(object* obj){
 			list[i] = tmp[i];
 		}
 
-		list[count] = obj;
+		list[count-1] = obj;
+
 
 		delete [] tmp;
+
+		std::cout << "\n";
 	} else{
-		count+=1;
-		list = new object*[count];
-		list[count-1] = obj;
+		list = new object*[1];
+		list[0] = obj;
+		count = 1;
 	}
 }
 
-document::~document(){
-	delete [] list;
-}
 
 void document::print(std::ostream& out) const {
+	out << "\n<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" << std::endl;
+
+	out << "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n" << std::endl;
+
 	for (int i = 0; i < count; i++){
 		list[i]->print(out);
 	}
+
+	out << "</svg>\n" << std::endl;
+}
+
+
+document::~document(){
+	delete [] list;
 }

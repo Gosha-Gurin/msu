@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include "svgclass.hpp"
+#include "reader.hpp"
 
 
 /*Структура проги:
@@ -9,24 +10,25 @@
 В цикле читаем теги и их аргументы. После (std::cin >> a) = EOF записываем все в файл. Звучит не сложно =)
 
 Теги и их аргументы:
-	- Общие для каждого объекта (цвет заливки, цвет линии, толщина линии, вывод объекта (cout))
+	- Общие для каждого объекта (цвет заливки, цвет линии, толщина линии, вывод объекта (cout)) - done
 	- Круг (центр х, центр у, радиус)
-	- Ломанная (коорды в виде "x1,y1 x2,y2 x3,y3 ...")
+	- Ломанная (коорды в виде "x1,y1 x2,y2 x3,y3 ...") - done
 	- Текст (слишком много, смотри в задаче) - done
 */
 
 
 /*ТУДУ:
-	- Считование цвета как слова (red, blue, green и т.п.)
 	- Дабавить теги =/
 	- Сделать нормальным вывод document
-	- Для удобства сделать отдельную комманду для вывода имеющихся тегов
-		(как сейчас принт документа)
 
 */
 
 std::map<std::string, int> tegs = {
-	{"text", 1},
+	{"print", 1},
+	{"test", 2},
+	{"text", 3},
+	{"polyline", 4},
+	{"circle", 5}
 };
 
 int main(){
@@ -36,91 +38,114 @@ int main(){
 	document FineDoc;
 	
 
-	std::cout << "Tegs: text\n-_-" << std::endl;
+	std::cout << "Tegs: test, print, text, polyline, circle\n" << std::endl;
 	while(std::cin >> tegInput){
 		try {
 			switch(tegs[tegInput]){
 				case 1:
-					{
-						double a_tmp;
-						double b_tmp;
-						double c_tmp;
-						std::string str_tmp;
+				{
+					FineDoc.print(std::cout);
+					break;
+				}
 
-						std::cout << "Enter fill-color: " << std::endl;
-						if (!(std::cin >> a_tmp >> b_tmp >> c_tmp)){
-							throw std::invalid_argument("Wrong arg for some double.");
-						}
 
-						color fill = {a_tmp, b_tmp, c_tmp};
+				case 2:
+				{
+					std::cout << "\nTest!\n" << std::endl;
+					break;
+				}
 
-						std::cout << "\nEnter stroke-color: " << std::endl;
-						if (!(std::cin >> a_tmp >> b_tmp >> c_tmp)){
-							throw std::invalid_argument("Wrong arg for some double.");
-						}
 
-						color strokeCol = {a_tmp, b_tmp, c_tmp};
+				case 3:
+				{
+					color fill = InColor(std::cin, "Enter fill-color: ");
 
-						std::cout << "\nEnter stroke-width: " << std::endl;
-						if (!(std::cin >> a_tmp)){
-							throw std::invalid_argument("Wrong arg for some double.");
-						}
+					color strokeCol = InColor(std::cin, "Enter stroke-color: ");
+					
+					double strokeWid = InDouble(std::cin, "Enter stroke-width: ");
+					
+					Point point = InPoint(std::cin, "Enter start-point: ");
 
-						double strokeWid = a_tmp;
+					Point offset = InPoint(std::cin, "Enter offset: ");
 
-						std::cout << "\nEnter point: " << std::endl;
-						if (!(std::cin >> a_tmp >> b_tmp)){
-							throw std::invalid_argument("Wrong arg for some double.");
-						}
+					double fontSize = InDouble(std::cin, "Enter font-size: ");
+					
+					std::string fontFam;
+					std::cin.ignore();
+					
+					std::cout << "Enter font-famaly: " << std::endl;
+					std::getline(std::cin, fontFam);
 
-						Point point = {a_tmp, b_tmp};
+					std::string data;
 
-						
-						std::cout << "\nEnter offset: " << std::endl;
-						if (!(std::cin >> a_tmp >> b_tmp)){
-							throw std::invalid_argument("Wrong arg for some double.");
-						}
+					std::cout << "Enter text: " << std::endl;
+					std::getline(std::cin, data);
 
-						Point offset = {a_tmp, b_tmp};
+					
 
-						
-						std::cout << "\nEnter font-size: " << std::endl;
-						if (!(std::cin >> a_tmp)){
-							throw std::invalid_argument("Wrong arg for some double.");
-						}
+					FineDoc.AddObject(new text(fill, strokeCol, strokeWid,
+											point, offset, fontSize, 
+											fontFam, data));
 
-						
-						double fontSize = a_tmp;
+					std::cout << "\nYou add new text-teg!\n" << std::endl;
+					break;
+				}
 
-						
-						std::string fontFam;
-						std::cin.ignore();
 
-						
-						std::cout << "\nEnter font-famaly: " << std::endl;
-						std::getline(std::cin, fontFam);
+				case 4:
+				{
+					color fill = InColor(std::cin, "Enter fill-color: ");
 
-						std::string data;
+					color strokeCol = InColor(std::cin, "Enter stroke-color: ");
+					
+					double strokeWid = InDouble(std::cin, "Enter stroke-width: ");
 
-						std::cout << "\nEnter text: " << std::endl;
-						std::getline(std::cin, data);
+					std::string points;
+					
+					std::cout << "Enter points: " << std::endl;
+					std::cin.ignore();
+					std::getline(std::cin, points);
 
-						
-						FineDoc.AddObject(new text(fill, strokeCol, strokeWid,
-												point, offset, fontSize, 
-												fontFam, data));
+					// std::cout << points << std::endl;
 
-						std::cout << "\nYou add new text-teg!\n" << std::endl;
-						break;
-					}
-				default:{
+					FineDoc.AddObject(new polyline(fill, strokeCol, strokeWid, polyPoints(points)));					
+
+					std::cout << "\nYou add new polyline-teg!\n" << std::endl;
+					break;
+				}
+
+
+				case 5:
+				{
+					color fill = InColor(std::cin, "Enter fill-color: ");
+
+					color strokeCol = InColor(std::cin, "Enter stroke-color: ");
+					
+					double strokeWid = InDouble(std::cin, "Enter stroke-width: ");
+
+					Point center = InPoint(std::cin, "Enter center: ");
+
+					double radius = InDouble(std::cin, "Enter radius: ");
+
+					FineDoc.AddObject(new circle(fill, strokeCol, strokeWid, center, radius));
+
+					std::cout << "\nYou add new circle-teg!\n" << std::endl;
+					break;
+				}
+
+
+				default:
+				{
 					throw std::invalid_argument("Wrong teg.");
+					break;
 				}
 			}
 		}
+
 		catch (const std::exception& e) {
-			std::cerr << e.what() << std::endl;
+			std::cerr << "\nError with this:\n" << e.what() << std::endl;
 		}
+
 	}
 
 	FineDoc.print(std::cout);

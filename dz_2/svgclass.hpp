@@ -1,9 +1,22 @@
 #include <iostream>
-#include <map>
+// #include <map>
+#include <vector>
+// #include <string>
+
+#ifndef SVGCLASS_HPP
+#define SVGCLASS_HPP
 
 struct Point {
 	double x;
 	double y;
+
+	double getX() const{
+		return x;
+	}
+
+	double getY() const{
+		return x;
+	}
 };
 
 // struct RGB{
@@ -19,9 +32,10 @@ class color
 	double red;
 	double green;
 	double blue;
+	std::string TextColor;
 public:
 	color() {};
-	color(const char* color);
+	color(std::string color);
 	color(double r, double g, double b);
 
 	~color() {};
@@ -70,9 +84,41 @@ public:
 
 	void print(std::ostream& out) const override;
 
+
 	~text() {};
 };
 
+
+class polyline : public object{
+	std::vector<Point> points;
+public:
+	polyline(color fillCol, color strokeCol,
+		double strokeWid, std::vector<Point> data):
+	object(fillCol, strokeCol, strokeWid),
+	points(data)
+	{};
+
+	void print(std::ostream& out) const override;
+
+	~polyline(){};//По идее в векторе уже все реализовано, так что с деструктором возиться не нужно
+	//по той же причине нам не нужна отдельная переменная для количества (существует .size() )
+};
+
+class circle : public object{
+	Point center;
+	double radius;
+public:
+	circle(color fillCol, color strokeCol,
+		double strokeWid, Point cen, double r):
+	object(fillCol, strokeCol, strokeWid),
+	center(cen),
+	radius(r)
+	{};
+
+	void print(std::ostream& out) const override;
+
+	~circle(){};
+};
 
 class document{
 	object** list;
@@ -89,3 +135,5 @@ public:
 
 	~document();
 };
+
+#endif
