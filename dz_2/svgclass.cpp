@@ -53,31 +53,31 @@ void object::obj_print(std::ostream& out) const {
 	fillColor.print(out);
 	out << "\" stroke=\"";
 	strokeColor.print(out);
-	out << "stroke-width=\"" << strokeWidth << "\"";
+	out << "\" stroke-width=\"" << strokeWidth << "\"";
 }
 
 
 void text::print(std::ostream& out) const{
-	out << "\t<text x = \"" << point.getX() << "\" y=\""
+	out << "    <text x=\"" << point.getX() << "\" y=\""
 		<< point.getY() << "\" "
 		<< "dx=\"" << point.getX() << "\" dy=\""
-		<< point.getY() << "\""
-		<< "font-size=\"" << fontSize << "\""
+		<< point.getY() << "\" "
+		<< "font-size=\"" << fontSize << "\" "
 		<< "font-family=\"" << fontFamaly << "\" ";
 
 	obj_print(out);
 	out << ">\n"
-		<< "\t" << data << "\n</text>" << std::endl;
+		<< "    " << data << "\n    </text>" << std::endl;
 }
 
 
 void polyline::print(std::ostream& out) const{
-	out << "\t<polyline points=\"";
-	for (int i = 0; i < points.size(); i++){
-		if (i == points.size() - 1){
+	out << "    <polyline points=\"";
+	for (int i = 0; i < (int)points.size(); i++){
+		if (i != (int)points.size() - 1){
 			out << points[i].getX() << "," << points[i].getY() << " ";
 		} else{
-			out << points[i].getX() << "," << points[i].getY();
+			out << points[i].getX() << "," << points[i].getY() << "\" ";
 		}
 	}
 
@@ -86,7 +86,7 @@ void polyline::print(std::ostream& out) const{
 }
 
 void circle::print(std::ostream& out) const{
-	out << "\t<circle cx=\"" << center.getX() << "\" "
+	out << "    <circle cx=\"" << center.getX() << "\" "
 		<< "cy=\"" << center.getX() << "\" ";
 
 	obj_print(out);
@@ -97,7 +97,7 @@ void circle::print(std::ostream& out) const{
 void document::AddObject(object* obj){
 	object** tmp;
 	if (count != 0){
-		std::cout << "hi!" << std::endl;
+// 		std::cout << "hi!" << std::endl;
 		tmp = new object*[count];
 		for (int i = 0; i < count; i++){
 			tmp[i] = list[i];
@@ -108,7 +108,7 @@ void document::AddObject(object* obj){
 
 		list = new object*[count];
 
-		for (int i = 0; i < count-1; i++){
+		for (int i = 0; i < count - 1; i++){
 			list[i] = tmp[i];
 		}
 
@@ -129,16 +129,20 @@ void document::AddObject(object* obj){
 void document::print(std::ostream& out) const {
 	out << "\n<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n" << std::endl;
 
-	out << "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">\n" << std::endl;
+	out << "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">" << std::endl;
 
 	for (int i = 0; i < count; i++){
+        std::cout << "\n";
 		list[i]->print(out);
 	}
 
-	out << "</svg>\n" << std::endl;
+	out << "\n</svg>\n" << std::endl;
 }
 
 
 document::~document(){
+    for (int i = 0; i < count; i++){
+		delete list[i];
+	}
 	delete [] list;
 }

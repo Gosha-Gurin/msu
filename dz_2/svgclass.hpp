@@ -122,7 +122,7 @@ public:
 
 class document{
 	object** list;
-	size_t count;
+	int count;
 public:
 	document():
 		list(nullptr),

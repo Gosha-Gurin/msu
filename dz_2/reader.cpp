@@ -24,7 +24,7 @@ color InColor (std::istream& in, std::string EnterMessege){
 double InDouble (std::istream& in, std::string EnterMessege){
 	double a_tmp = 0;
 	std::cout << EnterMessege << std::endl;
-	if (!(std::cin >> a_tmp)){
+	if (!(in >> a_tmp)){
 		throw std::invalid_argument("Wrong arg for some double.");
 	}
 	return a_tmp;
@@ -35,7 +35,7 @@ Point InPoint(std::istream& in, std::string EnterMessege){
 	double b_tmp = 0;
 
 	std::cout << EnterMessege << std::endl;
-	if (!(std::cin >> a_tmp >> b_tmp)){
+	if (!(in >> a_tmp >> b_tmp)){
 		throw std::invalid_argument("Wrong arg for some Point.");
 	}
 	return {a_tmp, b_tmp};
@@ -58,7 +58,7 @@ std::vector<Point> polyPoints(std::string& input){
 
 	// std::cout << input.size() << std::endl;
 
-	for (int i = 0; i < input.size(); i++){
+	for (int i = 0; i < (int)input.size(); i++){
 		letter = input[i];
 
 		// std::cout << i << " " << xNum << " " << yNum << std::endl;

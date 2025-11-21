@@ -94,7 +94,9 @@ namespace MyVec{
 	}
 
 	Vec& Vec::operator=(const Vec& other){
-
+        
+        delete [] data; //Отец, ты был прав!!!! Спасибо тебе большое!!! А с указателями... Я как-нибудь позже разберусь
+        
 		if (&other == this){
 			return *this;
 		}
