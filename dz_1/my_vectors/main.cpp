@@ -28,7 +28,7 @@
 
  - Посик коэфф:
 	Сразу в лоб считаем все из многочлена
-	Логранжа (получается вроде несложно, 
+	Лагранжа (получается вроде несложно, 
 						но сомнительно...)
 
 	Не понятно, как считать коэффициенты...
@@ -48,6 +48,17 @@
 	
 */
 
+/*
+ Что здесь есть:
+    - Создание полинома (конструкторы стандартный и копирующий)
+    - Перегруженны операторы =, ==, !=
+                    и [] (запись точки формата poly[x] = y)
+    - Функция AddDot (аналогично poly.Adddot(x, y))
+    - Функция DotDelete (Удаляет введенную точку)
+    - После изменения точек надо считать коэфф CoeffCalc();
+    - Расчет значения в точке
+ */
+
 int main(){
 	LagrangeClass::Polynomial poly1;
 	LagrangeClass::Polynomial poly2;
@@ -56,35 +67,45 @@ int main(){
 	poly1.AddDot(2, 3);
 
 	poly1.CoeffCalc();
-	std::cout << poly1;
+	std::cout << "poly1: \n" << poly1;
+    std::cout << "poly1(2.5) = " << poly1.PolyCalc(2.5) << std::endl;
 
 	std::cout << std::endl;
 
 	poly1[4] = 4;
 	poly1.CoeffCalc();
 
-	std::cout << poly1;
+	std::cout << "poly1: \n" << poly1;
 
 	std::cout << std::endl;
 
 	poly2[1] = 2;
 	poly2[2] = 3;
 	poly2[4] = 4;
+    poly2[10] = -(1.7);
 	poly2.CoeffCalc();
 
-	std::cout << poly2;
+	std::cout << "poly2: \n" << poly2;
 
 	std::cout << std::endl;
 
-	LagrangeClass::Polynomial poly3(poly2);
-
-	std::cout << poly3;
+//     LagrangeClass::Polynomial poly3(poly2);
+	LagrangeClass::Polynomial poly3;
+    poly3 = poly2;
+    
+    if(poly3 == poly2){        
+        std::cout << "True \n" << "poly3: \n" << poly3 << std::endl << "poly2: \n" << poly2;
+    }
+    
 	std::cout << std::endl;
 	
 	poly3.DotDelete(4, 4);
 	poly3.CoeffCalc();
 
-	std::cout << poly3;
+    
+    if(poly3 != poly2){        
+        std::cout << "False \n" << "poly3: \n" << poly3 << std::endl << "poly2: \n" << poly2;
+    }
 
 	return 0;
 }

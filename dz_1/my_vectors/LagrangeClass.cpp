@@ -24,6 +24,7 @@ namespace LagrangeClass{
 		}
 
 		/*	Вот это надо реализовать:
+         * 
 		-----------   ------    --------------------------
 		|a|b|c|d|1| x |-u|1| -> |-au|a-bu|b-cu|c-du|d-u|1|
 		-----------   ------    --------------------------	
@@ -94,9 +95,9 @@ namespace LagrangeClass{
 	*/
 	
 	Polynomial::Polynomial(const Polynomial& other):
-	CoefficientsValues(other.CoefficientsValues),
-	XDots(other.XDots),
-	YDots(other.YDots)
+        CoefficientsValues(other.CoefficientsValues),
+        XDots(other.XDots),
+        YDots(other.YDots)
 	{}
 	//Конструктор копирования просто копирует vector
 
@@ -117,7 +118,9 @@ namespace LagrangeClass{
 	//Вбиваем точку
 	void Polynomial::AddDot(double x, double y){
 		int i = 0;
-
+    
+        // x = 2 y = 4
+        
 		for (i = 0; i < XDots.size(); i++){
 			if (std::abs(XDots[i] - x) <= EPS){
 				YDots[i] = y;
