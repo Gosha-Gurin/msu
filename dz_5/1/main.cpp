@@ -58,7 +58,8 @@ int ScanLexemes(Lexeme* lexemes){
 			ptr = endPtr;
 		} else if (*ptr == '+' || *ptr == '-' ||
 				*ptr == '*' || *ptr == '/' ||
-				*ptr == '(' || *ptr == ')'){
+				*ptr == '(' || *ptr == ')' ||
+				*ptr == '<' || *ptr == '!'){
 
 			if(numLexemes >= MAX_LEXEMES){
 				std::cerr << "Слишком много лексем =(" << std::endl;
@@ -83,6 +84,19 @@ int ScanLexemes(Lexeme* lexemes){
 			} else if (*ptr == ')'){
 				lexemes[numLexemes].op = *ptr;
 				lexemes[numLexemes].priority = 0;
+				//Начинается Гошин (это я =) ) код
+			} else if (*ptr == '!' && (numLexemes == 0 ||
+				(numLexemes > 0 && lexemes[numLexemes - 1].op != 0))){
+				lexemes[numLexemes].op = '!';
+				lexemes[numLexemes].priority = 3;
+			} else if (*ptr == '<'){
+				if (*(++ptr) == '='){
+					lexemes[numLexemes].op = 'o';//less Or greater
+					lexemes[numLexemes].priority = 0;
+				} else{
+					lexemes[numLexemes].op = '<';
+					lexemes[numLexemes].priority = 0;
+				}
 			} else{
 				std::cerr << "Шо-то не то засунул в лексемы (высунь!)" << std::endl;
 				return -1;
@@ -95,7 +109,7 @@ int ScanLexemes(Lexeme* lexemes){
 		}
 	}
 
-	lexemes[numLexemes].op = '=';
+	lexemes[numLexemes].op = '=';//Это мы сами для себя спец символ добавили, для подведения итогов
 	lexemes[numLexemes].value = 0;
 	lexemes[numLexemes].priority = 0;
 
@@ -155,7 +169,7 @@ int ToPolandForm(Lexeme* lexemes, int numLexemes, Lexeme* polandLexemes){
 	}
 
 	if (stack[0].op != '='){
-		std::cerr << "А где '='?" << std::endl;
+		std::cerr << "А где мой '='?" << std::endl;
 		return -1;
 	}
 
@@ -186,24 +200,29 @@ double CalculuPolandExpression(Lexeme* expression, int num){
 			// std::cout << k << " '+' " << stack[stackSize - 2] << "\n";
 			stackSize--;
 		} else if (expression[k].op == '-' && stackSize >= 2){
-			//Если у нас не 2 аргумента, то мы выкидываем ошибку.
 			stack[stackSize - 2] = stack[stackSize - 2] - stack[stackSize - 1];
 			// std::cout << k << " '-' " << stack[stackSize - 2] << "\n";
 			stackSize--;
 		} else if (expression[k].op == '*' && stackSize >= 2){
-			//Если у нас не 2 аргумента, то мы выкидываем ошибку.
 			stack[stackSize - 2] = stack[stackSize - 2] * stack[stackSize - 1];
 			// std::cout << k << " '*' " << stack[stackSize - 2] << "\n";
 			stackSize--;
 		} else if (expression[k].op == '/' && stackSize >= 2){
-			//Если у нас не 2 аргумента, то мы выкидываем ошибку.
 			stack[stackSize - 2] = stack[stackSize - 2] / stack[stackSize - 1];
 			// std::cout << k << " '/' " << stack[stackSize - 2] << "\n";
 			stackSize--;
 		} else if (expression[k].op == 'u'){
-			//Если у нас не 2 аргумента, то мы выкидываем ошибку.
 			stack[stackSize - 1] = -stack[stackSize - 1];
 			// std::cout << k << " 'u' " << stack[stackSize - 1] << "\n";
+			//Гошин (это все еще я =) ) код
+		} else if (expression[k].op == '!'){
+			stack[stackSize - 1] = !bool(stack[stackSize - 1]);
+		} else if (expression[k].op == '<'){
+			stack[stackSize - 2] = (stack[stackSize - 2] < stack[stackSize - 1]);
+			stackSize--;
+		} else if (expression[k].op == 'o'){
+			stack[stackSize - 2] = (stack[stackSize - 2] <= stack[stackSize - 1]);
+			stackSize--;
 		} else{
 			return NAN;
 		}
@@ -233,11 +252,6 @@ int main(){
 
 	std::cout << "\n";
 	std::cout << "numPolandLexemes = " << numPolandLexemes << std::endl;
-
-	// std::cout << "\n";
-	// std::cout << "PolandLexemes:" << std::endl;
-	// PrintLexemes(polandLexemes, numPolandLexemes);
-	// std::cout << "\n";
 	
 	double result = CalculuPolandExpression(polandLexemes, numPolandLexemes);
 
