@@ -29,10 +29,12 @@ struct TreeNode{
 };
 
  
-TreeNode* ReadTree(std::vector<char>& vec, int& index);
+TreeNode* ReadTree(std::vector<char>& vec, int& index, int& p, int& q, TreeNode*& pPtr, TreeNode*& qPtr);
 
-TreeNode* ReadTree(){
+TreeNode* ReadTree(TreeNode*& pPtr, TreeNode*& qPtr){
 	char input;
+
+	int p, q;
 
 	std::vector<char> vec;
 	while(true){
@@ -46,15 +48,25 @@ TreeNode* ReadTree(){
 		}
 	}
 
+	std::cin >> p >> q;
+
 	int index = 0;
 
 	if (vec[index] != 110){
 		TreeNode* Root = new TreeNode((int)vec[index] - 48);
 
+		if (index == p){
+			pPtr = Root;
+		}
+
+		if (index == q){
+			qPtr = Root;
+		}
+
 		index++;
-		Root->left = ReadTree(vec, index);
+		Root->left = ReadTree(vec, index, p, q, pPtr, qPtr);
 		index++;
-		Root->right = ReadTree(vec, index);
+		Root->right = ReadTree(vec, index, p, q, pPtr, qPtr);
 
 		return Root;
 	} else {
@@ -70,14 +82,22 @@ TreeNode* ReadTree(){
 //==================================================================//
 
 
-TreeNode* ReadTree(std::vector<char>& vec, int& index){
+TreeNode* ReadTree(std::vector<char>& vec, int& index, int& p, int& q, TreeNode*& pPtr, TreeNode*& qPtr){
 	if (vec[index] != 110){
 		TreeNode* Root = new TreeNode((int)vec[index] - 48);
 
+		if (index == p){
+			pPtr = Root;
+		}
+
+		if (index == q){
+			qPtr = Root;
+		}
+
 		index++;
-		Root->left = ReadTree(vec, index);
+		Root->left = ReadTree(vec, index, p, q, pPtr, qPtr);
 		index++;
-		Root->right = ReadTree(vec, index);
+		Root->right = ReadTree(vec, index, p, q, pPtr, qPtr);
 
 		return Root;
 	} else {
@@ -107,31 +127,50 @@ void PrintTree(TreeNode* Root){
 	}
 }
 
-TreeNode* Process(TreeNode* Root, TreeNode* Left, TreeNode* Right){
-  	if (Root == Left || Root == Right){ return Root; }
+TreeNode* Process(TreeNode* Root, TreeNode* p, TreeNode* q){
+	if (Root == nullptr){
+		// std::cout << "1: nullptr\n";
+		return nullptr;
+		}
 
-    TreeNode* p = Process(Root->left, Left, Right);
-    TreeNode* q = Process(Root->right, Left, Right);
+  	if (Root == p || Root == q){
+  		// std::cout << "2: " << Root->value << "\n";
+  	  	return Root;
+  	}
+    TreeNode* Left = Process(Root->left, p, q);
+    TreeNode* Right = Process(Root->right, p, q);
 
-    if (p != nullptr && q != nullptr)
+    if (Left != nullptr && Right != nullptr){
+    	// std::cout << "3: " << Root->value<< "\n";
         return Root;
+    }
 
-    return (p != nullptr ? p : q);
+    if (Left != nullptr){
+    	// std::cout << "4: " << Left->value<< "\n";
+    	return Left;
+    } else {
+    	// std::cout << "5: " << Right->value<< "\n";
+    	return Right;
+    }
 }
 
 
 int main(){
-	TreeNode* Root = ReadTree();
+	TreeNode* tmp1;
+	TreeNode* tmp2;
 
-	std::cout << "\n";
+	TreeNode* Root = ReadTree(tmp1, tmp2);
+
+	std::cout << "\n" << "Дерево: " << "\n";
 	PrintTree(Root);
 	std::cout << "\n";
+	std::cout << "tmp: "<< tmp1->value << " >> " << tmp1 << "; " << tmp2->value << " >> " << tmp2 << "\n" << std::endl;
 
 
 
+	std::cout << Process(Root, tmp1, tmp2)->value << " >> " << Process(Root, tmp1, tmp2) << std::endl;
 
-
-	std::cout << Process(Root, Root->left->right, Root->left->left)->value << std::endl;
+	delete Root;
 
 	return 0;
 }

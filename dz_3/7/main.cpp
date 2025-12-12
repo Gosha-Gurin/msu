@@ -13,12 +13,9 @@ struct NodeList{
 	{}
 
 	~NodeList(){
-		delete next;
-	}
-
-	void AddElem(int value){
-		NodeList* tmp = new NodeList(value);
-		next = tmp;
+		if (next != nullptr){
+			delete next;
+		}
 	}
 };
 
@@ -121,6 +118,8 @@ int main(){
 	Process(Head);
 
 	PrintList(Head);
+
+	delete Head;
 
 	return 0;
 }
